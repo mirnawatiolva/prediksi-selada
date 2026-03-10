@@ -161,13 +161,13 @@ if menu == "Distribusi Penjualan":
                     )
                     num_periods = target_period - last_period
                 
-                st.markdown("### 🔢 Input Fitur")
-                # Menggunakan nilai rata-rata dari data untuk prediksi otomatis
-                jumlah_tanam = float(df['Jumlah Tanam'].mean())
-                data_stok = float(df['Data Stok'].mean())
-                data_transaksi = float(df['Data Transaksi'].mean())
+                # st.markdown("### 🔢 Input Fitur")
+                # # Menggunakan nilai rata-rata dari data untuk prediksi otomatis
+                # jumlah_tanam = float(df['Jumlah Tanam'].mean())
+                # data_stok = float(df['Data Stok'].mean())
+                # data_transaksi = float(df['Data Transaksi'].mean())
                 
-                st.info(f"📊 Prediksi menggunakan nilai rata-rata: Jumlah Tanam = {jumlah_tanam:.0f}, Data Stok = {data_stok:.0f}, Data Transaksi = {data_transaksi:.0f}")
+                # st.info(f"📊 Prediksi menggunakan nilai rata-rata: Jumlah Tanam = {jumlah_tanam:.0f}, Data Stok = {data_stok:.0f}, Data Transaksi = {data_transaksi:.0f}")
                 
                 model_choice = st.selectbox("Pilih Model", ["Random Forest", "SVM", "Voting Regressor"])
                 
