@@ -541,14 +541,14 @@ elif menu == "Jumlah Tanam":
                     )
                     num_periods = target_period - last_period
                 
-                st.markdown("### 🔢 Input Fitur")
-                # Menggunakan nilai rata-rata dari data untuk prediksi otomatis
-                data_stok = float(df['Data Stok'].mean())
-                data_transaksi = float(df['Data Transaksi'].mean())
-                sudah_packing = float(df['Sudah Packing'].mean())
-                stok_belum_panen = float(df['Stok Belum Panen'].mean())
+                # st.markdown("### 🔢 Input Fitur")
+                # # Menggunakan nilai rata-rata dari data untuk prediksi otomatis
+                # data_stok = float(df['Data Stok'].mean())
+                # data_transaksi = float(df['Data Transaksi'].mean())
+                # sudah_packing = float(df['Sudah Packing'].mean())
+                # stok_belum_panen = float(df['Stok Belum Panen'].mean())
                 
-                st.info(f"📊 Prediksi menggunakan nilai rata-rata: Data Stok = {data_stok:.0f}, Data Transaksi = {data_transaksi:.0f}, Sudah Packing = {sudah_packing:.0f}, Stok Belum Panen = {stok_belum_panen:.0f}")
+                # st.info(f"📊 Prediksi menggunakan nilai rata-rata: Data Stok = {data_stok:.0f}, Data Transaksi = {data_transaksi:.0f}, Sudah Packing = {sudah_packing:.0f}, Stok Belum Panen = {stok_belum_panen:.0f}")
                 
                 model_choice = st.selectbox("Pilih Model", ["Random Forest", "SVM", "Voting Regressor"])
                 
