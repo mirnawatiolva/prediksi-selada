@@ -162,13 +162,12 @@ if menu == "Distribusi Penjualan":
                     num_periods = target_period - last_period
                 
                 st.markdown("### 🔢 Input Fitur")
-                col1, col2, col3 = st.columns(3)
-                with col1:
-                    jumlah_tanam = st.number_input("Jumlah Tanam", value=float(df['Jumlah Tanam'].mean()), step=10.0)
-                with col2:
-                    data_stok = st.number_input("Data Stok", value=float(df['Data Stok'].mean()), step=10.0)
-                with col3:
-                    data_transaksi = st.number_input("Data Transaksi", value=float(df['Data Transaksi'].mean()), step=5.0)
+                # Menggunakan nilai rata-rata dari data untuk prediksi otomatis
+                jumlah_tanam = float(df['Jumlah Tanam'].mean())
+                data_stok = float(df['Data Stok'].mean())
+                data_transaksi = float(df['Data Transaksi'].mean())
+                
+                st.info(f"📊 Prediksi menggunakan nilai rata-rata: Jumlah Tanam = {jumlah_tanam:.0f}, Data Stok = {data_stok:.0f}, Data Transaksi = {data_transaksi:.0f}")
                 
                 model_choice = st.selectbox("Pilih Model", ["Random Forest", "SVM", "Voting Regressor"])
                 
@@ -543,13 +542,13 @@ elif menu == "Jumlah Tanam":
                     num_periods = target_period - last_period
                 
                 st.markdown("### 🔢 Input Fitur")
-                col1, col2 = st.columns(2)
-                with col1:
-                    data_stok = st.number_input("Data Stok", value=float(df['Data Stok'].mean()), step=10.0)
-                    data_transaksi = st.number_input("Data Transaksi", value=float(df['Data Transaksi'].mean()), step=5.0)
-                with col2:
-                    sudah_packing = st.number_input("Sudah Packing", value=float(df['Sudah Packing'].mean()), step=10.0)
-                    stok_belum_panen = st.number_input("Stok Belum Panen", value=float(df['Stok Belum Panen'].mean()), step=10.0)
+                # Menggunakan nilai rata-rata dari data untuk prediksi otomatis
+                data_stok = float(df['Data Stok'].mean())
+                data_transaksi = float(df['Data Transaksi'].mean())
+                sudah_packing = float(df['Sudah Packing'].mean())
+                stok_belum_panen = float(df['Stok Belum Panen'].mean())
+                
+                st.info(f"📊 Prediksi menggunakan nilai rata-rata: Data Stok = {data_stok:.0f}, Data Transaksi = {data_transaksi:.0f}, Sudah Packing = {sudah_packing:.0f}, Stok Belum Panen = {stok_belum_panen:.0f}")
                 
                 model_choice = st.selectbox("Pilih Model", ["Random Forest", "SVM", "Voting Regressor"])
                 
