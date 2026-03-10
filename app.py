@@ -26,7 +26,7 @@ st.markdown("---")
 # Sidebar untuk navigasi
 st.sidebar.header("Menu")
 menu = st.sidebar.selectbox(
-    "Pilih Model Prediksi",
+    "Pilih Prediksi (Prediksi Jumlah Tanam/Distribusi Penjualan)",
     ["Distribusi Penjualan", "Jumlah Tanam"]
 )
 
