@@ -161,18 +161,23 @@ if menu == "Distribusi Penjualan":
                     )
                     num_periods = target_period - last_period
                 
-                # st.markdown("### 🔢 Input Fitur")
-                # Menggunakan nilai rata-rata dari data untuk prediksi otomatis
-                jumlah_tanam = float(df['Jumlah Tanam'].mean())
-                data_stok = float(df['Data Stok'].mean())
-                data_transaksi = float(df['Data Transaksi'].mean())
+                # Input untuk periode pertama
+                # st.markdown("### 🔢 Input Fitur untuk Periode Awal")
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    jumlah_tanam = st.number_input("Jumlah Tanam", value=float(df['Jumlah Tanam'].tail(5).mean()), min_value=0.0, step=10.0)
+                with col2:
+                    data_stok = st.number_input("Data Stok", value=float(df['Data Stok'].tail(5).mean()), min_value=0.0, step=10.0)
+                with col3:
+                    data_transaksi = st.number_input("Data Transaksi", value=float(df['Data Transaksi'].tail(5).mean()), min_value=0.0, step=10.0)
                 
-                st.info(f"📊 Prediksi menggunakan nilai rata-rata: Jumlah Tanam = {jumlah_tanam:.0f}, Data Stok = {data_stok:.0f}, Data Transaksi = {data_transaksi:.0f}")
+                # st.info("💡 Untuk multiple periode, sistem akan menggunakan nilai rata-rata dari 5 periode terakhir sebagai baseline. Prediksi akan bervariasi berdasarkan model yang dipilih.")
                 
                 model_choice = st.selectbox("Pilih Model", ["Random Forest", "SVM", "Voting Regressor"])
                 
                 if st.button("🚀 Prediksi"):
                     with st.spinner("Melatih model dan melakukan prediksi untuk semua periode..."):
+                        # Gunakan nilai input sebagai baseline untuk periode pertama
                         new_data = pd.DataFrame({
                             'Jumlah Tanam': [jumlah_tanam],
                             'Data Stok': [data_stok],
@@ -205,15 +210,35 @@ if menu == "Distribusi Penjualan":
                             progress_bar.progress((idx + 1) / len(targets))
                         
                         # Prediksi untuk multiple periode
+                        # Untuk periode selanjutnya, gunakan nilai yang sedikit bervariasi berdasarkan prediksi sebelumnya
+                        current_jumlah_tanam = jumlah_tanam
+                        current_data_stok = data_stok
+                        current_data_transaksi = data_transaksi
+                        
                         for period in range(1, int(num_periods) + 1):
                             actual_period = last_period + period
+                            
+                            # Buat data untuk periode ini
+                            period_data = pd.DataFrame({
+                                'Jumlah Tanam': [current_jumlah_tanam],
+                                'Data Stok': [current_data_stok],
+                                'Data Transaksi': [current_data_transaksi]
+                            })
+                            
                             period_predictions = {'Periode': actual_period}
                             
                             for target in targets:
-                                pred = models[target].predict(new_data)[0]
+                                pred = models[target].predict(period_data)[0]
                                 period_predictions[target] = max(0, round(pred))
                             
                             predictions_by_period.append(period_predictions)
+                            
+                            # Update nilai untuk periode berikutnya (simulasi sederhana)
+                            # Kurangi stok berdasarkan total penjualan, tambahkan variasi kecil
+                            total_penjualan = sum([period_predictions[t] for t in targets])
+                            current_data_stok = max(0, current_data_stok - total_penjualan + np.random.normal(0, 10))
+                            current_data_transaksi = max(0, current_data_transaksi + np.random.normal(0, 5))
+                            # Jumlah tanam bisa tetap atau berubah, untuk kesederhanaan tetap
                         
                         predictions_df = pd.DataFrame(predictions_by_period)
                         
@@ -254,6 +279,45 @@ if menu == "Distribusi Penjualan":
                             
                             plt.tight_layout()
                             st.pyplot(fig)
+                        
+                        # Jika multiple periode, tampilkan visualisasi tambahan
+                        if int(num_periods) > 1:
+                            st.markdown("### 📊 Perbandingan Periode")
+                            
+                            # Pilih periode untuk ditampilkan
+                            selected_periods = st.multiselect(
+                                "Pilih periode untuk dibandingkan:",
+                                options=[p['Periode'] for p in predictions_by_period],
+                                default=[predictions_by_period[0]['Periode'], predictions_by_period[-1]['Periode']] if len(predictions_by_period) > 1 else [predictions_by_period[0]['Periode']],
+                                help="Pilih periode yang ingin dibandingkan dalam bar chart"
+                            )
+                            
+                            if selected_periods:
+                                fig, ax = plt.subplots(figsize=(12, 8))
+                                bar_width = 0.35
+                                positions = np.arange(len(targets))
+                                
+                                for i, period in enumerate(selected_periods):
+                                    period_data = next(p for p in predictions_by_period if p['Periode'] == period)
+                                    values = [period_data[t] for t in targets]
+                                    offset = (i - len(selected_periods)/2 + 0.5) * bar_width
+                                    bars = ax.bar(positions + offset, values, bar_width, 
+                                                 label=f'Periode {period}', alpha=0.8)
+                                    
+                                    # Tambahkan nilai di atas bar
+                                    for j, v in enumerate(values):
+                                        ax.text(positions[j] + offset, v, str(v), ha='center', va='bottom', fontsize=8)
+                                
+                                ax.set_xlabel('Saluran Penjualan')
+                                ax.set_ylabel('Jumlah Prediksi')
+                                ax.set_title(f'Perbandingan Prediksi Distribusi Penjualan ({model_choice})')
+                                ax.set_xticks(positions)
+                                ax.set_xticklabels(targets, rotation=45, ha='right')
+                                ax.legend()
+                                ax.grid(axis='y', alpha=0.3)
+                                
+                                plt.tight_layout()
+                                st.pyplot(fig)
                         
                         # Tampilkan tabel prediksi semua periode
                         if int(num_periods) > 1:
