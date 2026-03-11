@@ -161,17 +161,12 @@ if menu == "Distribusi Penjualan":
                     )
                     num_periods = target_period - last_period
                 
-                # Input untuk periode pertama
-                # st.markdown("### 🔢 Input Fitur untuk Periode Awal")
-                col1, col2, col3 = st.columns(3)
-                with col1:
-                    jumlah_tanam = st.number_input("Jumlah Tanam", value=float(df['Jumlah Tanam'].tail(5).mean()), min_value=0.0, step=10.0)
-                with col2:
-                    data_stok = st.number_input("Data Stok", value=float(df['Data Stok'].tail(5).mean()), min_value=0.0, step=10.0)
-                with col3:
-                    data_transaksi = st.number_input("Data Transaksi", value=float(df['Data Transaksi'].tail(5).mean()), min_value=0.0, step=10.0)
+                # Menggunakan nilai rata-rata dari data untuk prediksi otomatis
+                jumlah_tanam = float(df['Jumlah Tanam'].tail(5).mean())
+                data_stok = float(df['Data Stok'].tail(5).mean())
+                data_transaksi = float(df['Data Transaksi'].tail(5).mean())
                 
-                # st.info("💡 Untuk multiple periode, sistem akan menggunakan nilai rata-rata dari 5 periode terakhir sebagai baseline. Prediksi akan bervariasi berdasarkan model yang dipilih.")
+                st.info(f"📊 Prediksi menggunakan nilai rata-rata dari 5 periode terakhir: Jumlah Tanam = {jumlah_tanam:.0f}, Data Stok = {data_stok:.0f}, Data Transaksi = {data_transaksi:.0f}")
                 
                 model_choice = st.selectbox("Pilih Model", ["Random Forest", "SVM", "Voting Regressor"])
                 
